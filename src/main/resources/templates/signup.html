@@ -12,15 +12,55 @@
     <input id="password" type="password" placeholder="비밀번호" class="w-full p-3 border rounded">
     <input id="confirmPassword" type="password" placeholder="비밀번호 확인" class="w-full p-3 border rounded">
 
-    <button onclick="onClickSignUp()" class="w-full bg-black text-white p-3 rounded hover:bg-gray-800" >가입하기</button>
+    <button onclick="onClickSignUp()" class="w-full bg-black text-white p-3 rounded hover:bg-gray-800">가입하기</button>
 </div>
 
 <script>
 
+    const EMAIL_REG = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const CAPITAL_REG = /[A-Z]/
+    const SMALL_REG = /[a-z]/
+    const EMO_REG = /\d/
+    const NUM_REG = /[^A-Za-z0-9]/
 
-   function onClickSignUp(){
+    async function onClickSignUp() {
 
-   }
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        //이메일 길이
+        if (email.length >= 32) {
+            return alert("이메일은 32자 이하만 가능합니다.")
+        }
+        // 이메일 정규삭
+        if (!EMAIL_REG.test(email)) {
+            return alert("이메일 형식을 확인해주세요")
+        }
+        // 비밀번호 대소문자 정규식
+        if (!CAPITAL_REG.test(password) && !SMALL_REG.test(password) && !EMO_REG.test(password) && !NUM_REG.test(password)) {
+            return alert('비밀번호는 대/소문자, 숫자, 특수문자를 포함해야 합니다.');
+        }
+        // 비밀번호 불일치
+        if(password!==confirmPassword){
+            return alert("비밀번호가 일치하지 않습니다.")
+
+        }
+
+
+        // 비밀번호 암호화
+
+
+        const res = await fetch('/api/signup', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username: email, password: password})
+        });
+
+    }
+
+
+
 </script>
 </body>
 </html>
