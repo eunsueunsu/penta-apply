@@ -13,7 +13,9 @@
     <input id="confirmPassword" type="password" placeholder="비밀번호 확인" class="w-full p-3 border rounded">
 
     <button onclick="onClickSignUp()" class="w-full bg-black text-white p-3 rounded hover:bg-gray-800">가입하기</button>
+
 </div>
+
 
 <script>
 
@@ -38,27 +40,35 @@
             return alert("이메일 형식을 확인해주세요")
         }
         // 비밀번호 대소문자 정규식
-        if (!CAPITAL_REG.test(password) && !SMALL_REG.test(password) && !EMO_REG.test(password) && !NUM_REG.test(password)) {
+        if (!CAPITAL_REG.test(password) || !SMALL_REG.test(password) || !EMO_REG.test(password) || !NUM_REG.test(password)) {
             return alert('비밀번호는 대/소문자, 숫자, 특수문자를 포함해야 합니다.');
         }
         // 비밀번호 불일치
-        if(password!==confirmPassword){
+        if (password !== confirmPassword) {
             return alert("비밀번호가 일치하지 않습니다.")
 
         }
 
+        // 비밀번호 암호화 -> 서버단 처리
 
-        // 비밀번호 암호화
+        try {
+            const res = await fetch('/api/signup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email: email, password: password})
+            });
 
+            const data = await res.json();
 
-        const res = await fetch('/api/signup', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: email, password: password})
-        });
+            if (data.message) {
+                alert(data.message)
+            }
+        } catch (error) {
+            console.log(error);
+            alert("요청중 에러 발생")
+        }
 
     }
-
 
 
 </script>
